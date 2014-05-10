@@ -1,0 +1,13 @@
+node_modules
+.vagrant
+*.sublime-project
+*.sublime-workspace
+services.txt
+*.sw*
+audit.log*
+crawlers/
+temp/
+runtime.json
+Gemfile.lock
+.migrate
+
