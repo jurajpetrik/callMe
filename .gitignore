@@ -10,4 +10,6 @@ temp/
 runtime.json
 Gemfile.lock
 .migrate
-
+tmp/
+Cheffile.lock
+cookbooks/

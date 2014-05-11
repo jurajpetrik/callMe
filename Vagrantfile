@@ -13,8 +13,21 @@ Vagrant.configure("2") do |config|
   # doesn't already exist on the user's system.
   config.vm.box_url = "https://github.com/downloads/roderik/VagrantQuantal64Box/quantal64.box"
 
-  # Install dependencies
-  #config.vm.provision :shell, :path => "bootstrap.sh"
+  # Provision
+  config.omnibus.chef_version = :latest
+
+  config.vm.provision "chef_solo" do |chef|
+    chef.cookbooks_path = "cookbooks"
+    chef.add_recipe "apt"
+    chef.add_recipe "build-essential"
+    chef.add_recipe "nodejs"
+
+    chef.json = {
+      "nodejs" => {
+        "version" => "0.10.26"
+      }
+    }
+  end
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,

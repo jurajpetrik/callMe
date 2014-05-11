@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+#^syntax detection
+
+site 'http://community.opscode.com/api/v1'
+
+cookbook 'nodejs',
+  :git => 'https://github.com/mdxp/nodejs-cookbook.git'
