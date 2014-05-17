@@ -10,11 +10,11 @@
 		<script src="http://192.168.25.10:3030/socket.io/socket.io.js"></script>
 		<script>
 		  var socket = io.connect('http://192.168.25.10:3030');
-		  socket.on('news', function (data) {
-		    console.log(data);
-		    socket.emit('my other event', { my: 'data' });
+		  socket.on('sound', function (stream) {
+		  	 var audio = document.querySelector("audioPlayback");
+		  	 audio.src = window.URL.createObjectURL(stream);
 		  });
-		</script>
+  		</script>
 <style>
     body {
         font-family: Helvetica, sans-serif;
@@ -68,35 +68,8 @@
 <p id="controls">
     <button id="start_button">Start Recording</button>
 
-    <button id="stop_button">Stop Recording</button>
-
-    <button id="playback_button">Playback</button>
-
-    <button id="reset_button">Reset</button>
-</p>
-
-<canvas id="canvas" width="800" height="256" ></canvas>
-
-<br/>
-<p style="text-align:center"><a href='#' id='disable_audio'>Turn off the microphone</a></p>
-<p>&nbsp;</p>
-
-<p>See the code for more comments - note that the recording buffer is
-    a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays/Float32Array">Float32Array</a> which you need to grow every
-    time you add a new sample</p>
-<p>In order to play the recording you need to create a BufferSource node and copy the recording to it's buffer every time you play the audio</p>
-<p><a href="https://github.com/mattdiamond/Recorderjs">Recorder.js</a> by Matt Diamond is a more packaged approach to recording that allows you to
-    download the recording as a WAV file. This uses web workers to improve performance, which is a great idea, but it makes the code harder to
-    follow if you are getting started with web audio.</p>
-<p>As of July 2013 the demo only works in Google Chrome. The demo must be hosted on a server - it will not work if you open the page as a file.</p>
-<p>To avoid the requests to access the microphone you can use this
-    <a href="https://html5-examples.herokuapp.com/microphone_input_with_spectrogram.html">alternate https link</a></p>
-<p>&nbsp;</p>
-<p>This demo was created by <a href="http://craic.com">Robert Jones of Craic Computing</a>
-    and is freely distributed under the terms of the MIT license.</p>
-<p>This spectrogram in this demo was based on the excellent tutorial
-    <a href="http://www.smartjava.org/content/exploring-html5-web-audio-visualizing-sound">Exploring the HTML5 Web Audio: visualizing sound</a>
-    by Jos Dirksen.</p>
+<audio id="audioPlayback" autoplay>
+</audio>
 
 <script type="text/javascript">
 
@@ -156,10 +129,6 @@
     $(document).ready(function() {
 
 
-        // get the context from the canvas to draw on
-        ctx = $("#canvas").get()[0].getContext("2d");
-        clearCanvas();
-
         // Check that the browser can handle web audio
         try {
 //            audioContext = new webkitAudioContext();
@@ -174,7 +143,7 @@
         try {
             // calls the function setupAudioNodes
 //            navigator.webkitGetUserMedia({audio:true}, setupAudioNodes, onError);
-            navigator.getMedia({audio:true}, setupAudioNodes, onError);
+            navigator.getMedia({audio:true}, emitToServer, onError);
 
         } catch (e) {
             alert('webkitGetUserMedia threw exception :' + e);
@@ -229,43 +198,11 @@
     }
 
 
-    // Add this buffer to the recording
-    // recording is a global
-    function addSampleToRecording(inputBuffer) {
-        var currentBuffer = inputBuffer.getChannelData(0);
 
-        if (recording ==  null) {
-            // handle the first buffer
-            recording = currentBuffer;
-        } else {
-            // allocate a new Float32Array with the updated length
-            newlen = recording.length + currentBuffer.length;
-            var newBuffer = new Float32Array(newlen);
-            newBuffer.set(recording, 0);
-            newBuffer.set(currentBuffer, recording.length);
-            recording = newBuffer;
-        }
+    function emitToServer(stream)
+    {
+    	socket.emit("audio",stream);
     }
-
-    function playRecording() {
-        // You need to create the buffer node every time we play the sound
-        // Are we able to cleanup that memory or does the footprint grow over time ??
-        if ( recording != null ) {
-            // create the Buffer from the recording
-            audioBuffer = audioContext.createBuffer( 1, recording.length, audioContext.sampleRate );
-            audioBuffer.getChannelData(0).set(recording, 0);
-
-            // create the Buffer Node with this Buffer
-            audioBufferNode = audioContext.createBufferSource();
-            audioBufferNode.buffer = audioBuffer;
-            console.log('recording buffer length ' + audioBufferNode.buffer.length.toString());
-
-            // connect the node to the destination and play the audio
-            audioBufferNode.connect(audioContext.destination);
-            audioBufferNode.noteOn(0);
-        }
-    }
-
     function setupAudioNodes(stream) {
         var sampleSize = 1024;  // number of samples to collect before analyzing FFT
                                 // decreasing this gives a faster sonogram, increasing it slows it down
