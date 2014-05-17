@@ -1,0 +1,14 @@
+{
+  "name": "callMe",
+  "description": "Just a simple voice chat wrote in node",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "socket.io": "git://github.com/LearnBoost/socket.io.git#master",
+    "express": "4.1.2"
+  }
+}
+
+
+
+
