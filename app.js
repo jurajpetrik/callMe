@@ -63,6 +63,11 @@ io.on('connection', function (socket) {
     });
   });
 
+    socket.on('audio', function (data) {
+    socket.broadcast.emit('audio', data);
+  });
+
+
   // when the user disconnects.. perform this
   socket.on('disconnect', function () {
     // remove the username from global usernames list
