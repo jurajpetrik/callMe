@@ -76,8 +76,7 @@
 
             // execute every time a new sample has been acquired
             javascriptNode.onaudioprocess = function (e) {
-            socket.emit("audio",e.inputBuffer);
-
+            socket.emit("audio",e.inputBuffer.getChannelData(0));
           }
         });
 
@@ -180,9 +179,7 @@
 
     // Add this buffer to the recording
     // recording is a global
-    function addSampleToRecording(inputBuffer) {
-        var currentBuffer = inputBuffer.getChannelData(0);
-
+    function addSampleToRecording(currentBuffer) {
         if (recording ==  null) {
             // handle the first buffer
             recording = currentBuffer;
