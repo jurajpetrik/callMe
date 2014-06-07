@@ -143,40 +143,6 @@
         array = new Uint8Array(analyserNode.frequencyBinCount);
     }
 
-
-    // Draw the Spectrogram from the frequency array
-    // adapted from http://www.smartjava.org/content/exploring-html5-web-audio-visualizing-sound
-    function drawSpectrogram() {
-
-        for (var i = 0; i < array.length; i += 1) {
-            // Get the color for each pixel from a color map
-            var value = array[i];
-            ctx.beginPath();
-            ctx.strokeStyle = hot.getColor(value).hex();
-
-            // draw a 1 pixel wide rectangle on the canvas
-            var y = canvasHeight - i;
-            ctx.moveTo(x, y);
-            ctx.lineTo(x+1, y);
-            ctx.closePath();
-            ctx.stroke();
-        }
-
-        // loop around the canvas when we reach the end
-        x = x + 1;
-        if(x >= canvasWidth) {
-            x = 0;
-            clearCanvas();
-        }
-    }
-
-
-    function clearCanvas() {
-        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-        x = 0;
-    }
-
-
     // Add this buffer to the recording
     // recording is a global
     function addSampleToRecording(currentBuffer) {
