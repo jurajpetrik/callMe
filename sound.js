@@ -31,15 +31,6 @@
     var canvasHeight = 256;
     var ctx;
 
-    // Uses the chroma.js library by Gregor Aisch to create a tasteful color gradient
-    // download from https://github.com/gka/chroma.js
-    var hot = new chroma.ColorScale({
-        colors:['#000000', '#ff0000', '#ffff00', '#ffffff'],
-        positions:[0, .25, .75, 1],
-        mode:'rgb',
-        limits:[0, 256]
-    });
-
 
     window.craicAudioContext = (function(){
       return  window.webkitAudioContext || window.AudioContext ;
@@ -51,6 +42,12 @@
                            navigator.msGetUserMedia);
 
     $(document).ready(function() {
+     
+        socket.on('audio', function(data)
+        {
+           console.log("audio data: ",data);
+            addSampleToRecording(data);            
+        });
 
 
         // Check that the browser can handle web audio
@@ -67,12 +64,11 @@
         try {
             // calls the function setupAudioNodes
 //            navigator.webkitGetUserMedia({audio:true}, setupAudioNodes, onError);
-            navigator.getMedia({audio:true}, emitToServer, onError);
+            navigator.getMedia({audio:true}, setupAudioNodes, onError);
 
         } catch (e) {
             alert('webkitGetUserMedia threw exception :' + e);
         }
-
 
         // Start recording by setting onaudioprocess to the function that manages the recording buffer
         $("body").on('click', "#start_button",function(e) {
@@ -80,13 +76,9 @@
 
             // execute every time a new sample has been acquired
             javascriptNode.onaudioprocess = function (e) {
+            socket.emit("audio",e.inputBuffer);
 
-                addSampleToRecording(e.inputBuffer);
-
-                // Analyze the frequencies in this sample and add to the spectorgram
-                analyserNode.getByteFrequencyData(array);
-                requestAnimFrame(drawSpectrogram);
-            }
+          }
         });
 
         // Stop recording by setting onaudioprocess to null
@@ -121,12 +113,6 @@
         console.log(e);
     }
 
-
-
-    function emitToServer(stream)
-    {
-        socket.emit("audio",stream);
-    }
     function setupAudioNodes(stream) {
         var sampleSize = 1024;  // number of samples to collect before analyzing FFT
                                 // decreasing this gives a faster sonogram, increasing it slows it down
@@ -191,9 +177,24 @@
         x = 0;
     }
 
-    socket.on('audio', function(data)
-    {
-       alert('got data');
-       console.log("audio data: ",data);
-    });
+
+    // Add this buffer to the recording
+    // recording is a global
+    function addSampleToRecording(inputBuffer) {
+        var currentBuffer = inputBuffer.getChannelData(0);
+
+        if (recording ==  null) {
+            // handle the first buffer
+            recording = currentBuffer;
+        } else {
+            // allocate a new Float32Array with the updated length
+            newlen = recording.length + currentBuffer.length;
+            var newBuffer = new Float32Array(newlen);
+            newBuffer.set(recording, 0);
+            newBuffer.set(currentBuffer, recording.length);
+            recording = newBuffer;
+        }
+    }
+
+
 
