@@ -193,5 +193,24 @@
         }
     }
 
+    function playRecording() {
+        // You need to create the buffer node every time we play the sound
+        // Are we able to cleanup that memory or does the footprint grow over time ??
+        if ( recording != null ) {
+            // create the Buffer from the recording
+            audioBuffer = audioContext.createBuffer( 1, recording.length, audioContext.sampleRate );
+            audioBuffer.getChannelData(0).set(recording, 0);
+
+            // create the Buffer Node with this Buffer
+            audioBufferNode = audioContext.createBufferSource();
+            audioBufferNode.buffer = audioBuffer;
+            console.log('recording buffer length ' + audioBufferNode.buffer.length.toString());
+
+            // connect the node to the destination and play the audio
+            audioBufferNode.connect(audioContext.destination);
+            audioBufferNode.noteOn(0);
+        }
+    }
+
 
 
