@@ -110,7 +110,7 @@
     }
 
     function setupAudioNodes(stream) {
-        var sampleSize = 1024;  // number of samples to collect before analyzing FFT
+        var sampleSize = 1024 * 64;  // number of samples to collect before analyzing FFT
                                 // decreasing this gives a faster sonogram, increasing it slows it down
         audioStream = stream;
 
@@ -125,7 +125,7 @@
         // setup the analyser node
         analyserNode = audioContext.createAnalyser();
         analyserNode.smoothingTimeConstant = 0.0;
-        analyserNode.fftSize = 1024; // must be power of two
+        analyserNode.fftSize = sampleSize; // must be power of two
 
         // connect the nodes together
         sourceNode.connect(analyserNode);
