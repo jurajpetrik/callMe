@@ -43,11 +43,7 @@
 
     $(document).ready(function() {
      
-        socket.on('audio', function(data)
-        {
-           console.log("audio data: ",data);
-            addSampleToRecording(data);            
-        });
+        socket.on('audio',addSampleToRecording);
 
 
         // Check that the browser can handle web audio
