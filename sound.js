@@ -143,7 +143,8 @@
     // Add this buffer to the recording
     // recording is a global
     function addSampleToRecording(currentBuffer) {
-        if (recording ==  null) {
+        playRecording(new Float32Array(currentBuffer));
+        /*if (recording ==  null) {
             // handle the first buffer
             recording = currentBuffer;
         } else {
@@ -153,7 +154,7 @@
             newBuffer.set(recording, 0);
             newBuffer.set(currentBuffer, recording.length);
             recording = newBuffer;
-        }
+        }*/
     }
 
     function playRecording() {
