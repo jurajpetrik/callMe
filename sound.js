@@ -76,8 +76,9 @@
 
             // execute every time a new sample has been acquired
             javascriptNode.onaudioprocess = function (e) {
-            socket.emit("audio",e.inputBuffer.getChannelData(0));
-          }
+                var bufferArray = Array.prototype.slice.call(e.inputBuffer.getChannelData(0));
+                socket.emit("audio", bufferArray);
+            }
         });
 
         // Stop recording by setting onaudioprocess to null
