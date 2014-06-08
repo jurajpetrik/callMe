@@ -157,7 +157,7 @@
         }*/
     }
 
-    function playRecording() {
+    function playRecording(recording) {
         // You need to create the buffer node every time we play the sound
         // Are we able to cleanup that memory or does the footprint grow over time ??
         if ( recording != null ) {
