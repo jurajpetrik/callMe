@@ -5,3 +5,12 @@ http://stackoverflow.com/questions/12640245/play-audio-stream-with-audio-api
 http://stackoverflow.com/questions/16878853/using-javascript-to-stream-audio-via-webkitaudiocontext
 https://github.com/kulikala/AudioStream
 http://www.html5rocks.com/en/tutorials/audio/scheduling/
+
+http://stackoverflow.com/questions/10365335/decodeaudiodata-returning-a-null-error
+https://github.com/mattdiamond/Recorderjs
+http://www.html5rocks.com/en/tutorials/webaudio/intro/ -> this is awesome!
+https://github.com/drewbharris/node-multi
+https://github.com/oampo/Audiolet
+http://stackoverflow.com/questions/20876152/playing-pcm-stream-from-web-audio-api-on-node-js
+
+https://github.com/wearefractal/holla

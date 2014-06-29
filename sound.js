@@ -122,14 +122,8 @@
         // Set up the javascript node - this uses only one channel - i.e. a mono microphone
         javascriptNode = audioContext.createJavaScriptNode(sampleSize, 1, 1);
 
-        // setup the analyser node
-        analyserNode = audioContext.createAnalyser();
-        analyserNode.smoothingTimeConstant = 0.0;
-        analyserNode.fftSize = 2048; // must be power of two
-
         // connect the nodes together
-        sourceNode.connect(analyserNode);
-        analyserNode.connect(javascriptNode);
+        sourceNode.connect(javascriptNode);
         javascriptNode.connect(audioContext.destination);
 
         // optional - connect input to audio output (speaker)
@@ -168,11 +162,11 @@
             // create the Buffer Node with this Buffer
             audioBufferNode = audioContext.createBufferSource();
             audioBufferNode.buffer = audioBuffer;
-            console.log('recording buffer length ' + audioBufferNode.buffer.length.toString());
+            console.log('recording buffer length ' + audioBufferNode.buffer.length);
 
             // connect the node to the destination and play the audio
             audioBufferNode.connect(audioContext.destination);
-            audioBufferNode.noteOn(0);
+            audioBufferNode.start(0);
         }
     }
 
